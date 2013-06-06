@@ -7,13 +7,14 @@ Server for tooling around the development process for the NuPIC project.
 
 First, install nodejs and npm.
 
-Then, install connect.
+Then, install connect and request:
 
-	npm i connect
+    npm install connect
+    npm install request
 
 ## Running it
 
-	./index.js
+    ./index.js
 
 ## Travis Agent
 
