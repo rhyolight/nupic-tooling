@@ -1,8 +1,24 @@
 #!/usr/bin/node
 
-var app,
-	connect = require('connect'),
+var connect = require('connect'),
+	CLIENT_ID = process.env.GH_BASIC_CLIENT_ID,
+	CLIENT_SECRET = process.env.GH_BASIC_SECRET_ID,
+	oauthPitcher, oauthCatcher,
 	travisHandler;
+
+oauthCatcher = function(req, res, next) {
+	// ignore all URLs that don't start /oauth_callback
+	if (req.url.substr(0,15) != '/oauth_callback') {
+		return next();
+	}
+};
+
+oauthPitcher = function(req, res, next) {
+	if (req.url != '/') {
+		return next();
+	}
+	
+};
 
 travisHandler = function(req, res, next) {
 	// ignore all URLs that don't start /travis
@@ -13,8 +29,10 @@ travisHandler = function(req, res, next) {
 	res.end();
 };
 
-app = connect()
+connect()
 	.use(connect.logger('dev'))
 	.use(connect.bodyParser())
+	.use(oauthCatcher)
+	.use(oauthPitcher)
 	.use(travisHandler)
 	.listen(3031);
