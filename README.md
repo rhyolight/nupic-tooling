@@ -28,6 +28,6 @@ Now that you're running it, you need to kick off the OAuth with Github. Do so by
 
 ## Travis Agent
 
-Expecting Travis webhook on build success/failure at http://localhost:8081/travis. Expects an 'authentication' header as defined in [Travis docs|http://about.travis-ci.org/docs/user/notifications/#Authorization].
+Expecting Travis webhook on build success/failure at http://localhost:8081/travis. Expects an 'authentication' header as defined in [Travis docs](http://about.travis-ci.org/docs/user/notifications/#Authorization).
 
 Upon receiving build end notice, will call Github API to merge `dev-master` into `master` as long as the Travis notification is from `dev-master`. (This part is under construction.)
