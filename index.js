@@ -1,10 +1,8 @@
 #!/usr/bin/node
 
 var fs = require('fs'),
-    url = require('url'),
     connect = require('connect'),
-    request = require('request'),
-    oathHandlers = require('./oauth'),
+    oauthHandlers = require('./oauth'),
     github = require('./githubClient'),
     
     accessToken;
@@ -27,7 +25,9 @@ function travisHandler(req, res) {
 connect()
     .use(connect.logger('dev'))
     .use(connect.bodyParser())
-    .use('/oauth_callback', oauthHandlers.catcher)
+    .use('/oauth_callback', oauthHandlers.catcher(function(token) {
+		accessToken = token;
+	}))
     .use('/travis', travisHandler)
     .use('/', oauthHandlers.pitcher)
     .listen(3031);
