@@ -4,53 +4,30 @@ var fs = require('fs'),
     url = require('url'),
     connect = require('connect'),
     request = require('request'),
+    oathHandlers = require('./oauth'),
+    github = require('./githubClient'),
     
-    oauthHtml = fs.readFileSync('resources/oauth.html', 'utf-8'),
+    accessToken;
 
-    CLIENT_ID = process.env.GH_BASIC_CLIENT_ID,
-    CLIENT_SECRET = process.env.GH_BASIC_SECRET_ID,
-    oauthRequestUrl = 'https://github.com/login/oauth/authorize?client_id=' + CLIENT_ID,
-    accessToken,
+function buildSucceeded(body) {
+    console.log(body);
+    return false;
+}
 
-    oauthPitcher, oauthCatcher,
-    travisHandler;
-
-oauthHtml = oauthHtml.replace('{{client_id}}', CLIENT_ID);
-
-oauthPitcher = function(req, res) {
-    res.end(oauthHtml);
-};
-
-oauthCatcher = function(req, res) {
-    var sessionCode = url.parse(req.url, true).query.code;
-    console.log('session code: ' + sessionCode);
-    request.post(
-        {
-            url: 'https://github.com/login/oauth/access_token', 
-            json: {
-                client_id: CLIENT_ID,
-                client_secret: CLIENT_SECRET,
-                code: sessionCode
-            }
-        }, 
-        function(err, oauthRes, body) {
-            accessToken = body.access_token;
-            console.log('received access token: ' + accessToken);
-            res.end();
-        }
-    );
-};
-
-travisHandler = function(req, res) {
-    console.log(req.body);
+function travisHandler(req, res) {
     console.log('/travis: access token: ' + accessToken);
+    if (buildSucceeded(req.body)) {
+        github.mergeBranch('dev-master', 'master', function() {
+
+        });
+    }
     res.end();
 };
 
 connect()
     .use(connect.logger('dev'))
     .use(connect.bodyParser())
-    .use('/oauth_callback', oauthCatcher)
+    .use('/oauth_callback', oauthHandlers.catcher)
     .use('/travis', travisHandler)
-    .use('/', oauthPitcher)
+    .use('/', oauthHandlers.pitcher)
     .listen(3031);
