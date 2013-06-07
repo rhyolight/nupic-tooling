@@ -1,5 +1,3 @@
-#!/usr/bin/node
-
 var fs = require('fs'),
     connect = require('connect'),
     oauthHandlers = require('./oauth'),
@@ -22,16 +20,21 @@ function travisHandler(req, res) {
         console.warn('Received invalid request on travis webhook!');
         return res.end();
     }
-    // if (! githubClient) {
-    //     console.warn('Travis webhook received, but github oauth is invalid.');
-    //     return res.end();
-    // }
+    if (! githubClient) {
+        console.warn('Travis webhook received, but github oauth is invalid.');
+        return res.end();
+    }
     console.log('Using ' + accessToken + ' for github API.');
     if (buildSucceeded(req.body)) {
         console.log('build succeeded');
-        // githubClient.mergeBranch('dev-master', 'master', function(err) {
-
-        // });
+        githubClient.mergeBranch('dev-master', 'master', function(err) {
+            if (! err) {
+                console.log('merge complete');
+            } else {
+                console.warn('merge failure!');
+                console.error(err);
+            }
+        });
     } else {
         console.warn('build failed');
     }
