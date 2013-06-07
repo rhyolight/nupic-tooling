@@ -17,18 +17,11 @@ var fs = require('fs'),
 
 oauthHtml = oauthHtml.replace('{{client_id}}', CLIENT_ID);
 
-oauthPitcher = function(req, res, next) {
-    if (req.url != '/') {
-        return next();
-    }
+oauthPitcher = function(req, res) {
     res.end(oauthHtml);
 };
 
-oauthCatcher = function(req, res, next) {
-    // ignore all URLs that don't start /oauth_callback
-    if (req.url.substr(0,15) != '/oauth_callback') {
-        return next();
-    }
+oauthCatcher = function(req, res) {
     var sessionCode = url.parse(req.url, true).query.code;
 	console.log('session code: ' + sessionCode);
     request.post(
@@ -48,20 +41,17 @@ oauthCatcher = function(req, res, next) {
     );
 };
 
-travisHandler = function(req, res, next) {
-    // ignore all URLs that don't start /travis
-    if (req.url.substr(0,7) != '/travis') {
-        return next();
-    }
+travisHandler = function(req, res) {
     console.log(req.body);
+    console.log('access token: ' + accessToken);
     res.end();
 };
 
 connect()
     .use(connect.logger('dev'))
     .use(connect.bodyParser())
-    .use(oauthPitcher)
-    .use(oauthCatcher)
-    .use(travisHandler)
+    .use('/callback', oauthCatcher)
+    .use('/travis', travisHandler)
+    .use('/', oauthPitcher)
     .listen(3031);
 
