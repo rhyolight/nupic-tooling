@@ -12,7 +12,8 @@ connect()
     .use('/oauth_callback', oauthHandlers.catcher(function(token) {
         accessToken = token;
         githubClient = new gh.GithubClient(accessToken);
+        travis.setGithubClient(githubClient);
     }))
-    .use('/travis', travis(githubClient))
+    .use('/travis', travis.handler)
     .use('/', oauthHandlers.pitcher)
     .listen(8081);

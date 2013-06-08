@@ -1,4 +1,6 @@
 var GitHubApi = require("github"),
+    head = 'test-branch-2',
+    base = 'test-branch-1',
     GithubClient;
 
 function GithubClient(accessToken) {
@@ -8,7 +10,6 @@ function GithubClient(accessToken) {
         timeout: 5000
     });
     console.log('GithubClient created with access token ' + accessToken);
-    console.log('Verifying access token...');
     this.github.authenticate({
         type: "oauth",
         token: accessToken
@@ -16,12 +17,12 @@ function GithubClient(accessToken) {
 }
 
 GithubClient.prototype.mergeDevIntoMaster = function(callback) {
-    console.log('merging test-branch-2 into test-branch-1...');
+    console.log('merging ' + head + ' into ' + base + '...');
     this.github.repos.merge({
         user: 'numenta',
         repo: 'nupic',
-        base: 'test-branch-1',
-        head: 'test-branch-2'
+        base: base,
+        head: head
     }, function(err, data) {
         console.log(err);
         console.log(data);
