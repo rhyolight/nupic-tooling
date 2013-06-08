@@ -2,8 +2,6 @@ var connect = require('connect'),
     oauthHandlers = require('./oauth'),
     gh = require('./githubClient'),
     travis = require('./travis'),
-    // used to authenticate Travis requests
-    TRAVIS_TOKEN = process.env.TRAVIS_TOKEN,
     // github API token from oauth
     accessToken,
     githubClient;
