@@ -11,6 +11,7 @@ Then, install connect and request:
 
     npm install connect
     npm install request
+    npm install github
 
 ## Running it
 
@@ -26,8 +27,8 @@ Start the server:
 
 Now that you're running it, you need to kick off the OAuth with Github. Do so by pointing your browser to http://localhost:8081/, then click the link provided. The logs will show your Github access token, and you're ready to go.
 
-## Travis Agent
+## Travis Webhook
 
-Expecting Travis webhook on build success/failure at http://localhost:8081/travis. Expects an 'authentication' header as defined in [Travis docs](http://about.travis-ci.org/docs/user/notifications/#Authorization).
+This server expects Travis webhook calls on build success/failure at http://localhost:8081/travis. It authenticates Travis requests using the 'authentication' header as defined in [Travis docs](http://about.travis-ci.org/docs/user/notifications/#Authorization).
 
 Upon receiving build end notice, will call Github API to merge `dev-master` into `master` as long as the Travis notification is from `dev-master`. (This part is under construction.)
