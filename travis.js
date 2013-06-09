@@ -8,7 +8,7 @@ function shouldMerge(travisPayload) {
         && travisPayload.branch == headBranch);
 }
 
-function isValidTravisRequest(req, token) {
+function isValidTravisRequest(req, token, ghUser, ghRepo) {
     var authValue, shasum, expected;
     if (! req.headers || ! req.headers.authorization) {
         return false;
@@ -22,7 +22,7 @@ function isValidTravisRequest(req, token) {
 
 module.exports = function(travisToken, githubClient) {
     return function(req, res) {
-        if (! isValidTravisRequest(req, travisToken)) {
+        if (! isValidTravisRequest(req, travisToken, githubClient.org, githubClient.repo)) {
             console.warn('Received invalid request on travis webhook!');
             return res.end();
         }

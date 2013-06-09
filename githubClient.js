@@ -2,7 +2,6 @@ var GitHubApi = require("github"),
     GithubClient;
 
 function GithubClient(user, apiKey, org, repo) {
-    this.accessToken = accessToken;
     this.org = org;
     this.repo = repo;
     this.github = new GitHubApi({
