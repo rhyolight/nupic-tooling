@@ -1,26 +1,27 @@
 var GitHubApi = require("github"),
-    head = 'test-branch-2',
-    base = 'test-branch-1',
     GithubClient;
 
-function GithubClient(accessToken) {
+function GithubClient(user, apiKey, org, repo) {
     this.accessToken = accessToken;
+    this.org = org;
+    this.repo = repo;
     this.github = new GitHubApi({
         version: "3.0.0",
         timeout: 5000
     });
-    console.log('GithubClient created with access token ' + accessToken);
+    console.log('GithubClient created for user ' + user);
     this.github.authenticate({
-        type: "oauth",
-        token: accessToken
+        type: "basic",
+        username: user,
+        password: apiKey
     });
 }
 
-GithubClient.prototype.mergeDevIntoMaster = function(callback) {
+GithubClient.prototype.merge = function(head, base, callback) {
     console.log('merging ' + head + ' into ' + base + '...');
     this.github.repos.merge({
-        user: 'numenta',
-        repo: 'nupic',
+        user: this.org,
+        repo: this.repo,
         base: base,
         head: head
     }, function(err, data) {
