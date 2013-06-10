@@ -3,20 +3,20 @@ var connect = require('connect'),
     travis = require('./travis'),
     TRAVIS_TOKEN = process.env.TRAVIS_TOKEN,
     GH_USERNAME = process.env.GH_USERNAME,
-    GH_API_KEY = process.env.GH_API_KEY,
+    GH_PASSWORD = process.env.GH_PASSWORD,
     GH_ORG = 'numenta',
     GH_REPO = 'nupic',
     githubClient;
 
-if (! TRAVIS_TOKEN || ! GH_USERNAME || ! GH_API_KEY) {
+if (! TRAVIS_TOKEN || ! GH_USERNAME || ! GH_PASSWORD) {
     console.error('You must set the following environment variables:\n' +
         '\t- TRAVIS_TOKEN\n' +
         '\t- GH_USERNAME\n' +
-        '\t- GH_API_KEY');
+        '\t- GH_PASSWORD');
     process.exit(-1);
 }
 
-githubClient = new gh.GithubClient(GH_USERNAME, GH_API_KEY, GH_ORG, GH_REPO);
+githubClient = new gh.GithubClient(GH_USERNAME, GH_PASSWORD, GH_ORG, GH_REPO);
 
 connect()
     .use(connect.logger('dev'))

@@ -1,7 +1,8 @@
 var GitHubApi = require("github"),
     GithubClient;
 
-function GithubClient(user, apiKey, org, repo) {
+function GithubClient(user, password, org, repo) {
+    var me = this;
     this.org = org;
     this.repo = repo;
     this.github = new GitHubApi({
@@ -12,7 +13,19 @@ function GithubClient(user, apiKey, org, repo) {
     this.github.authenticate({
         type: "basic",
         username: user,
-        password: apiKey
+        password: password
+    });
+    console.log('Running a quick test of the client...');
+    // test the client
+    this.github.repos.getForks({
+        user: this.org,
+        repo: this.repo
+    }, function(err, forks) {
+        if (err) {
+            console.error('There was an issue with the github client.');
+            process.exit(-1);
+        }
+        console.log(me.org + '/' + me.repo + ' has ' + forks.length + ' forks.');
     });
 }
 
@@ -24,8 +37,6 @@ GithubClient.prototype.merge = function(head, base, callback) {
         base: base,
         head: head
     }, function(err, data) {
-        console.log(err);
-        console.log(data);
         callback(err);
     });
 };

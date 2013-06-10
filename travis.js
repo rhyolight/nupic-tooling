@@ -1,10 +1,13 @@
 var fs = require('fs'),
     crypto = require('crypto'),
-    headBranch = 'test-branch-2'
-    baseBranch = 'test-branch-1';
+    headBranch = 'dev-master'
+    baseBranch = 'master';
 
 function shouldMerge(travisPayload) {
-    return (travisPayload.status == 'Passed' 
+    console.log('To merge, build status must be "Passed" and branch must be "' + headBranch + '".');
+    console.log(travisPayload.status_message == 'Passed');
+    console.log(travisPayload.branch == headBranch);
+    return (travisPayload.status_message == 'Passed' 
         && travisPayload.branch == headBranch);
 }
 
